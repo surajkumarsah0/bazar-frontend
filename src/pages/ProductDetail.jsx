@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productAPI } from '../services/api';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../src/context/CartContext.jsx';
 import { toast,Toaster } from 'react-hot-toast';
 
 const ProductDetail = () => {

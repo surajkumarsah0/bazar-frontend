@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../src/context/Authcontext.jsx';
 
 const Register = () => {
   const [formData, setFormData] = useState({

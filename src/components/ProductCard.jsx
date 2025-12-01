@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../src/context/CartContext.jsx';
 import {toast,Toaster} from 'react-hot-toast';
 
 const ProductCard = ({ product }) => {
