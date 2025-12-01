@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { productAPI, categoryAPI, orderAPI } from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../src/context/Authcontext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { toast, Toaster } from 'react-hot-toast';
 import Popup from 'reactjs-popup';
