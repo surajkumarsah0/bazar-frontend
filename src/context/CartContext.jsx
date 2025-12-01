@@ -1,12 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { calculateTotalPrice, calculateTotalItems } from '../../src/utils/authHelpers';
 
 const CartContext = createContext();
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within CartProvider');
-  }
+  if (!context) throw new Error('useCart must be used within CartProvider');
   return context;
 };
 
@@ -15,9 +14,7 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
+    if (savedCart) setCart(JSON.parse(savedCart));
   }, []);
 
   useEffect(() => {
@@ -27,7 +24,6 @@ export const CartProvider = ({ children }) => {
   const addToCart = (product, quantity = 1) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
-      
       if (existingItem) {
         return prevCart.map(item =>
           item.id === product.id
@@ -35,7 +31,6 @@ export const CartProvider = ({ children }) => {
             : item
         );
       }
-      
       return [...prevCart, { ...product, quantity }];
     });
   };
@@ -45,11 +40,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (productId, quantity) => {
-    if (quantity <= 0) {
-      removeFromCart(productId);
-      return;
-    }
-    
+    if (quantity <= 0) return removeFromCart(productId);
     setCart(prevCart =>
       prevCart.map(item =>
         item.id === productId ? { ...item, quantity } : item
@@ -57,29 +48,17 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  const clearCart = () => {
-    setCart([]);
-  };
+  const clearCart = () => setCart([]);
 
-  const getTotalPrice = () => {
-    return cart.reduce((total, item) => {
-      const price = item.discountPrice || item.price;
-      return total + (price * item.quantity);
-    }, 0);
-  };
-
-  const getTotalItems = () => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  };
-
+  // Only component/hook logic here
   const value = {
     cart,
     addToCart,
     removeFromCart,
     updateQuantity,
     clearCart,
-    getTotalPrice,
-    getTotalItems,
+    getTotalPrice: () => calculateTotalPrice(cart),
+    getTotalItems: () => calculateTotalItems(cart),
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

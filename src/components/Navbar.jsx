@@ -7,7 +7,8 @@ const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
   const { getTotalItems } = useCart();
   const navigate = useNavigate();
-  const [ scrolled,setScrolled] = useState(false);
+  
+  const [  ,setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {

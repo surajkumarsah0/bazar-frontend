@@ -1,14 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { authAPI } from '../services/api';
+import { loginUser, registerUser, fetchUserProfile } from '../../src/utils/authHelpers';
 
 const AuthContext = createContext();
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
 };
 
@@ -16,21 +13,18 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Load profile on first render
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      loadUser();
-    } else {
-      setLoading(false);
-    }
+    if (token) loadUser();
+    else setLoading(false);
   }, []);
 
   const loadUser = async () => {
     try {
-      const response = await authAPI.getProfile();
-      setUser(response.data);
-    // eslint-disable-next-line no-unused-vars
-    } catch (error) {
+      const data = await fetchUserProfile();
+      setUser(data);
+    } catch {
       localStorage.removeItem('token');
     } finally {
       setLoading(false);
@@ -38,17 +32,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const response = await authAPI.login({ email, password });
-    localStorage.setItem('token', response.data.token);
-    setUser(response.data.user);
-    return response.data;
+    const data = await loginUser(email, password);
+    setUser(data.user);
+    return data;
   };
 
   const register = async (name, email, password, role = 'customer') => {
-    const response = await authAPI.register({ name, email, password, role });
-    localStorage.setItem('token', response.data.token);
-    setUser(response.data.user);
-    return response.data;
+    const data = await registerUser(name, email, password, role);
+    setUser(data.user);
+    return data;
   };
 
   const logout = () => {
